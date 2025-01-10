@@ -128,7 +128,7 @@ impl Drop for List {
 }
 
 #[cfg(test)]
-mod first_tests {
+mod test {
     use super::List;
 
     #[test]
