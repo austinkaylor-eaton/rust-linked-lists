@@ -135,6 +135,26 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
+impl<T> Drop for SinglyLinkedList<T> {
+    /// Drops the [`SinglyLinkedList`] and all its elements.
+    /// # Algorithm
+    /// - The `head` field of the list is taken and assigned to the `head` variable.
+    /// - A `while` loop is used to iterate over the list.
+    /// - The `head` variable is unwrapped using the `Rc::try_unwrap` method.
+    /// - If the `Rc` is successfully unwrapped, the `next` field of the `Node` struct is assigned to the `head` variable.
+    /// - If the `Rc` is not successfully unwrapped, the loop is broken.
+    fn drop(&mut self) {
+        let mut head = self.head.take();
+        while let Some(node) = head {
+            if let Ok(mut node) = Rc::try_unwrap(node) {
+                head = node.next.take();
+            } else {
+                break;
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::SinglyLinkedList;
